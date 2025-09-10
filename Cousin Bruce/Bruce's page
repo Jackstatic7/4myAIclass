@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bruce Cheesepuff</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        header {
+            background-color: #ff0000;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        main {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .profile {
+            text-align: center;
+        }
+        .profile img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+        .profile h2 {
+            color: #ff0000;
+            margin: 10px 0;
+        }
+        .profile p {
+            font-size: 1.2em;
+            color: #555;
+        }
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background: #ff0000;
+            color: #fff;
+            font-size: 0.9em;
+        }
+        footer a {
+            color: #fff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bruce Cheesepuff</h1>
+    </header>
+    <main>
+        <section class="profile">
+            <img src="PastedGraphic-1.png" alt="Bruce Cheesepuff">
+            <h2>Meet Bruce</h2>
+            <p>Bruce Cheesepuff, the adventurous cousin of the legendary Cheesepuff family, is known for his daring spirit and curious nature. Unlike the rest of the family, Bruce prefers exploring the world beyond the farm. Whether he's climbing trees, dodging predators, or discovering hidden treasures, Bruce always brings a sense of excitement wherever he goes.</p>
+            <p>While Bruce may not live on the farm full-time, he often visits the Cheesepuffs to share stories of his travels and inspire the young chicks to dream big. With his trademark green shirt and bow and arrow, along with a fearless attitude, Bruce is a true pioneer among the Cheesepuff clan.</p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 The Cheesepuff Family Chronicles | Created with ❤️ by <a href="#">Jackstatic7</a></p>
+    </footer>
+</body>
+</html>
