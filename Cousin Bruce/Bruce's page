@@ -18,7 +18,7 @@
             color: #fff;
             padding: 20px 0;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgb(0, 0, 0);
         }
         header h1 {
             margin: 0;
@@ -30,7 +30,7 @@
             padding: 20px;
             background: #fff;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.401);
         }
         .profile {
             text-align: center;
@@ -39,7 +39,7 @@
             max-width: 100%;
             height: auto;
             border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.414);
             margin-bottom: 20px;
         }
         .profile h2 {
@@ -48,7 +48,7 @@
         }
         .profile p {
             font-size: 1.2em;
-            color: #555;
+            color: #000000;
         }
         footer {
             text-align: center;
@@ -72,11 +72,11 @@
             <img src="PastedGraphic-1.png" alt="Bruce Cheesepuff">
             <h2>Meet Bruce</h2>
             <p>Bruce Cheesepuff, the adventurous cousin of the legendary Cheesepuff family, is known for his daring spirit and curious nature. Unlike the rest of the family, Bruce prefers exploring the world beyond the farm. Whether he's climbing trees, dodging predators, or discovering hidden treasures, Bruce always brings a sense of excitement wherever he goes.</p>
-            <p>While Bruce may not live on the farm full-time, he often visits the Cheesepuffs to share stories of his travels and inspire the young chicks to dream big. With his trademark bandana and fearless attitude, Bruce is a true pioneer among the Cheesepuff clan.</p>
+            <p>While Bruce may not live on the farm full-time, he often visits the Cheesepuffs to share stories of his travels and inspire the young chicks to dream big. With his trademark green shirt, bow and arrow, and fearless attitude, Bruce is a true pioneer among the Cheesepuff clan.</p>
         </section>
     </main>
     <footer>
-        <p>&copy; 2025 The Cheesepuff Family Chronicles | Created with ❤️ by <a href="#">Jackstatic7</a></p>
+        <p>&copy; 2025 The Cheesepuff Family Chronicles | Created with ❤️ by <a href="#">Jackstatic7 and Github</a></p>
     </footer>
 </body>
 </html>
