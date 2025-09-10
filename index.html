@@ -20,14 +20,19 @@
     <h1>Welcome to the Cheesepuff Family Page!</h1>
     <p>Enjoy the music while you browse our site.</p>
     
-    <!-- Audio Player -->
-    <audio id="background-music" autoplay>
-        <source src="https://youtu.be/5j1y_aZORZs?si=z4Op2v2aBumo-Qaj" type="audio/mpeg">
-        <source src="https://youtu.be/5j1y_aZORZs?si=z4Op2v2aBumo-Qaj" type="audio/ogg">
-        Your browser does not support the audio element.
-    </audio>
-    
-    <p>If the music doesn't start, check your browser settings or enable audio playback.</p>
+<audio id="audio" preload="auto">
+    <source src="/Zelda-music.m4a" type="audio/mpeg">
+</audio>
+
+<script>
+    window.addEventListener('load', () => {
+        const audio = document.getElementById('audio');
+        setTimeout(() => {
+            audio.muted = false; // Ensure it's unmuted
+            audio.play().catch(error => console.log('Autoplay blocked:', error));
+        }, 1000); // 1-second delay
+    });
+</script>
 </body>
 </html>
 <!DOCTYPE html>
