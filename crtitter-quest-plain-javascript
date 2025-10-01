@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Critter Quest RPG</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=MedievalSharp&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Cinzel', serif;
+        }
+        
+        body {
+            background: #1a0f0a;
+            background-image: 
+                radial-gradient(ellipse at top, rgba(139, 69, 19, 0.15), transparent 50%),
+                radial-gradient(ellipse at bottom, rgba(101, 67, 33, 0.15), transparent 50%),
+                linear-gradient(135deg, #1a0f0a 0%, #2d1810 50%, #1a0f0a 100%);
+            min-height: 100vh;
+        }
+        
+        .grid-cell {
+            aspect-ratio: 1;
+            transition: all 0.3s ease;
+            min-height: 40px;
+        }
+        
+        .grid-cell:hover {
+            transform: scale(1.05);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .torch-glow {
+            animation: flicker 3s ease-in-out infinite;
+            text-shadow: 0 0 20px rgba(255, 140, 0, 0.8), 0 0 40px rgba(255, 69, 0, 0.5);
+        }
+        
+        .stone-texture {
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(80, 80, 80, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(60, 60, 60, 0.3) 0%, transparent 50%),
+                linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 50%, #3a3a3a 100%);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+        
+        .wood-texture {
+            background: linear-gradient(90deg, #5d4e37 0%, #6b5b45 25%, #5d4e37 50%, #6b5b45 75%, #5d4e37 100%);
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .metal-shine {
+            background: linear-gradient(135deg, #8b7355 0%, #d4af37 50%, #8b7355 100%);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5), inset 0 -2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .parchment {
+            background: linear-gradient(to bottom, #f4e4c1, #e8d4a0);
+            box-shadow: inset 0 0 30px rgba(139, 105, 20, 0.3);
+        }
+        
+        button {
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
+        }
+    </style>
+</head>
+<body class="text-amber-100 p-4">
+    <div class="max-w-6xl mx-auto">
+        <!-- Title -->
+        <div class="text-center mb-8">
+            <div class="inline-block parchment px-12 py-6 rounded-lg shadow-2xl border-4 border-amber-900">
+                <h1 class="text-6xl font-bold text-amber-900 mb-2 torch-glow" style="text-shadow: 3px 3px 6px rgba(0,0,0,0.8)">
+                    ⚔️ CRITTER QUEST ⚔️
+                </h1>
+                <p class="text-amber-800 text-lg italic font-semibold">~ A Medieval Adventure ~</p>
+            </div>
+        </div>
+        
+        <!-- Sprite Upload Section -->
+        <div class="stone-texture rounded-lg p-6 mb-6 border-4 border-amber-800 shadow-2xl">
+            <h2 class="text-2xl font-bold mb-4 text-amber-300 text-center">
+                🎨 Customize Thy Heroes & Beasts
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="text-center">
+                    <label class="cursor-pointer block wood-texture hover:opacity-80 rounded-lg p-3 transition border-2 border-amber-900 shadow-lg">
+                        <div class="text-lg font-bold mb-2 text-amber-200">⚔️ Player</div>
+                        <input type="file" accept="image/*" id="sprite-player" class="hidden">
+                        <div class="text-xs text-amber-400">Clicketh to upload</div>
+                    </label>
+                </div>
+                <div class="text-center">
+                    <label class="cursor-pointer block wood-texture hover:opacity-80 rounded-lg p-3 transition border-2 border-amber-900 shadow-lg">
+                        <div class="text-lg font-bold mb-2 text-amber-200">🦊 Fox</div>
+                        <input type="file" accept="image/*" id="sprite-fox" class="hidden">
+                        <div class="text-xs text-amber-400">Clicketh to upload</div>
+                    </label>
+                </div>
+                <div class="text-center">
+                    <label class="cursor-pointer block wood-texture hover:opacity-80 rounded-lg p-3 transition border-2 border-amber-900 shadow-lg">
+                        <div class="text-lg font-bold mb-2 text-amber-200">🦝 Possum</div>
+                        <input type="file" accept="image/*" id="sprite-possum" class="hidden">
+                        <div class="text-xs text-amber-400">Clicketh to upload</div>
+                    </label>
+                </div>
+                <div class="text-center">
+                    <label class="cursor-pointer block wood-texture hover:opacity-80 rounded-lg p-3 transition border-2 border-amber-900 shadow-lg">
+                        <div class="text-lg font-bold mb-2 text-amber-200">🦝 Raccoon</div>
+                        <input type="file" accept="image/*" id="sprite-raccoon" class="hidden">
+                        <div class="text-xs text-amber-400">Clicketh to upload</div>
+                    </label>
+                </div>
+                <div class="text-center">
+                    <label class="cursor-pointer block wood-texture hover:opacity-80 rounded-lg p-3 transition border-2 border-amber-900 shadow-lg">
+                        <div class="text-lg font-bold mb-2 text-amber-200">👑 Boss</div>
+                        <input type="file" accept="image/*" id="sprite-boss" class="hidden">
+                        <div class="text-xs text-amber-400">Clicketh to upload</div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player Stats -->
+        <div class="parchment rounded-lg p-5 mb-6 border-4 border-amber-900 shadow-2xl">
+            <div class="flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <span class="metal-shine px-6 py-3 rounded-full font-bold text-amber-900 border-4 border-amber-800 shadow-xl text-lg inline-block">
+                        ⚔️ Leveleth <span id="current-level">1</span> / 3 ⚔️
+                    </span>
+                </div>
+                <div class="flex gap-6 flex-wrap">
+                    <div class="flex items-center gap-3 wood-texture px-4 py-2 rounded-lg border-2 border-red-900 shadow-lg">
+                        <span class="text-2xl">❤️</span>
+                        <span class="text-red-200 font-bold"><span id="player-hp">100</span>/<span id="player-max-hp">100</span></span>
+                    </div>
+                    <div class="flex items-center gap-3 wood-texture px-4 py-2 rounded-lg border-2 border-blue-900 shadow-lg">
+                        <span class="text-2xl">⚡</span>
+                        <span class="text-blue-200 font-bold"><span id="player-mana">50</span>/<span id="player-max-mana">50</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map View -->
+        <div id="map-view" class="stone-texture rounded-lg p-6 mb-6 border-4 border-emerald-800 shadow-2xl">
+            <h2 class="text-3xl font-bold mb-6 text-center text-emerald-300 torch-glow">
+                🗺️ THE KINGDOM MAP 🗺️
+            </h2>
+            <div id="map-grid" class="grid gap-1 mb-6 p-6 bg-black bg-opacity-50 rounded-lg border-4 border-stone-900 shadow-inner" style="grid-template-columns: repeat(10, minmax(0, 1fr))">
+            </div>
+            <div class="grid grid-cols-3 gap-3 max-w-md mx-auto mb-4">
+                <div></div>
+                <button onclick="movePlayer(0, -1)" class="metal-shine hover:bg-amber-600 px-6 py-3 rounded-lg font-bold border-4 border-amber-800 shadow-xl text-xl text-amber-900">↑</button>
+                <div></div>
+                <button onclick="movePlayer(-1, 0)" class="metal-shine hover:bg-amber-600 px-6 py-3 rounded-lg font-bold border-4 border-amber-800 shadow-xl text-xl text-amber-900">←</button>
+                <div class="wood-texture rounded-lg flex items-center justify-center text-sm font-bold border-2 border-amber-900 text-amber-200">MOVE</div>
+                <button onclick="movePlayer(1, 0)" class="metal-shine hover:bg-amber-600 px-6 py-3 rounded-lg font-bold border-4 border-amber-800 shadow-xl text-xl text-amber-900">→</button>
+                <div></div>
+                <button onclick="movePlayer(0, 1)" class="metal-shine hover:bg-amber-600 px-6 py-3 rounded-lg font-bold border-4 border-amber-800 shadow-xl text-xl text-amber-900">↓</button>
+                <div></div>
+            </div>
+            <div class="parchment p-4 rounded-lg border-2 border-amber-800 text-center shadow-lg">
+                <p class="mb-2 font-bold text-amber-900">🗡️ Legend of ye Map 🗡️</p>
+                <p class="text-sm text-amber-800 font-semibold">P = Player | E = Enemy | T = Treasure | X = Exit | B = Boss</p>
+                <p class="text-xs text-amber-700 mt-1 italic">Clicketh adjacent tiles or useth arrow buttons to move</p>
+            </div>
+        </div>
+
+        <!-- Battle View -->
+        <div id="battle-view" class="stone-texture rounded-lg p-8 mb-6 border-4 shadow-2xl hidden">
+            <h2 id="battle-title" class="text-4xl font-bold mb-6 text-center torch-glow">⚔️ BATTLE! ⚔️</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-8">
+                <!-- Player -->
+                <div class="text-center">
+                    <div class="mb-4 flex justify-center">
+                        <div id="player-sprite-battle" class="w-40 h-40 metal-shine rounded-xl flex items-center justify-center text-5xl font-bold border-4 border-amber-600 shadow-2xl">⚔️</div>
+                    </div>
+                    <div class="font-bold text-2xl mb-3 text-amber-300">HERO</div>
+                    <div class="wood-texture rounded-lg p-4 border-2 border-amber-900 shadow-lg">
+                        <div class="flex items-center gap-3 mb-3 justify-center">
+                            <span class="text-xl">❤️</span>
+                            <span class="text-sm text-red-200 font-bold"><span id="battle-player-hp">100</span>/<span id="battle-player-max-hp">100</span></span>
+                        </div>
+                        <div class="flex items-center gap-3 justify-center">
+                            <span class="text-xl">⚡</span>
+                            <span class="text-sm text-blue-200 font-bold"><span id="battle-player-mana">50</span>/<span id="battle-player-max-mana">50</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enemy -->
+                <div class="text-center">
+                    <div class="mb-4 flex justify-center relative">
+                        <div id="enemy-sprite-battle" class="w-40 h-40 bg-gradient-to-br from-red-900 to-red-950 rounded-xl flex items-center justify-center text-5xl font-bold border-4 border-red-700 shadow-2xl">👹</div>
+                        <div id="enemy-defending-icon" class="absolute -top-3 -right-3 hidden">
+                            <span class="text-5xl animate-pulse">🛡️</span>
+                        </div>
+                    </div>
+                    <div id="enemy-name" class="font-bold text-2xl mb-3 text-red-300">WILDE FOX</div>
+                    <div id="enemy-defending-text" class="text-lg text-blue-400 mb-3 font-bold hidden">⚔️ DEFENDING ⚔️</div>
+                    <div class="wood-texture rounded-lg p-4 border-2 border-amber-900 shadow-lg">
+                        <div class="flex items-center gap-3 justify-center">
+                            <span class="text-xl">❤️</span>
+                            <span class="text-sm text-red-200 font-bold"><span id="enemy-hp">30</span>/<span id="enemy-max-hp">30</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <button onclick="playerAttack()" class="bg-gradient-to-b from-red-700 to-red-900 hover:from-red-600 hover:to-red-800 px-6 py-4 rounded-lg font-bold flex items-center justify-center gap-3 border-4 border-red-950 shadow-2xl text-lg text-amber-100">
+                    ⚔️ ATTACK
+                </button>
+                <button id="spell-btn" onclick="playerSpell()" class="bg-gradient-to-b from-purple-700 to-purple-900 hover:from-purple-600 hover:to-purple-800 px-6 py-4 rounded-lg font-bold flex items-center justify-center gap-3 border-4 border-purple-950 shadow-2xl text-lg text-amber-100">
+                    🧀 CHEESIFICATION (20)
+                </button>
+                <button onclick="playerDefend()" class="bg-gradient-to-b from-emerald-700 to-emerald-900 hover:from-emerald-600 hover:to-emerald-800 px-6 py-4 rounded-lg font-bold flex items-center justify-center gap-3 border-4 border-emerald-950 shadow-2xl text-lg text-amber-100">
+                    🛡️ DEFEND
+                </button>
+            </div>
+        </div>
+
+        <!-- Victory Screen -->
+        <div id="victory-view" class="parchment rounded-lg p-8 mb-6 border-4 border-amber-700 text-center shadow-2xl hidden">
+            <div class="text-8xl mb-6 animate-pulse">👑</div>
+            <div class="text-5xl mb-4 font-bold text-amber-900" style="text-shadow: 3px 3px 6px rgba(0,0,0,0.5)">⚔️ VICTORY! ⚔️</div>
+            <p class="mb-6 text-amber-800 text-xl font-semibold">Ye kingdom is saved! Thou hast defeated Lord Critterbane!</p>
+            <button onclick="resetGame()" class="metal-shine hover:opacity-90 px-10 py-4 rounded-lg font-bold border-4 border-amber-800 shadow-2xl text-xl text-amber-900">
+                ⚔️ PLAYETH AGAIN ⚔️
+            </button>
+        </div>
+
+        <!-- Defeat Screen -->
+        <div id="defeat-view" class="stone-texture rounded-lg p-8 mb-6 border-4 border-red-900 text-center shadow-2xl hidden">
+            <div class="text-5xl mb-4 font-bold text-red-400" style="text-shadow: 3px 3px 6px rgba(0,0,0,0.8)">💀 DEFEATED 💀</div>
+            <p class="mb-6 text-red-300 text-xl font-semibold">Thou hast fallen in battle...</p>
+            <button onclick="resetGame()" class="bg-gradient-to-b from-red-700 to-red-900 hover:from-red-600 hover:to-red-800 px-10 py-4 rounded-lg font-bold border-4 border-red-950 shadow-2xl text-xl text-amber-100">
+                ⚔️ TRYETH AGAIN ⚔️
+            </button>
+        </div>
+
+        <!-- Game Log -->
+        <div class="parchment rounded-lg p-5 border-4 border-amber-900 shadow-2xl">
+            <h3 class="font-bold mb-3 text-amber-900 text-center text-2xl">
+                📜 CHRONICLE OF BATTLE 📜
+            </h3>
+            <div id="game-log" class="space-y-2 bg-amber-50 bg-opacity-60 p-4 rounded-lg border-2 border-amber-800 shadow-inner min-h-32">
+                <div class="text-sm text-amber-900 font-semibold italic">⚔️ Greetings, brave knight! Exploreth ye map and vanquish thy foes!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            mode: 'map',
+            level: 1,
+            playerHP: 100,
+            playerMaxHP: 100,
+            playerMana: 50,
+            playerMaxMana: 50,
+            enemyHP: 30,
+            enemyMaxHP: 30,
+            playerPos: { x: 0, y: 0 },
+            mapGrid: [],
+            visitedCells: new Set(['0,0']),
+            currentEnemy: null,
+            enemyDefending: false,
+            isBossFight: false,
+            sprites: {
+                player: null,
+                fox: null,
+                possum: null,
+                raccoon: null,
+                boss: null
+            }
+        };
+
+        const GRID_SIZE = 10;
+        const enemies = {
+            1: { name: 'Wilde Fox', type: 'fox', hp: 30, attack: 8, defense: 3 },
+            2: { name: 'Sneaky Possum', type: 'possum', hp: 45, attack: 12, defense: 5 },
+            3: { name: 'Bandit Raccoon', type: 'raccoon', hp: 65, attack: 15, defense: 7 },
+            boss: { name: 'Lord Critterbane', type: 'boss', hp: 150, attack: 20, defense: 10 }
+        };
+
+        ['player', 'fox', 'possum', 'raccoon', 'boss'].forEach(type => {
+            document.getElementById(`sprite-${type}`).addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        gameState.sprites[type] = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        function addLog(msg) {
+            const log = document.getElementById('game-log');
+            const entry = document.createElement('div');
+            entry.className = 'text-sm text-amber-900 font-semibold italic';
+            entry.textContent = '⚔️ ' + msg;
+            log.appendChild(entry);
+            
+            while (log.children.length > 6) {
+                log.removeChild(log.firstChild);
+            }
+        }
+
+        function generateMap() {
+            const grid = [];
+            const enemyCount = gameState.level === 3 ? 4 : 3 + gameState.level * 2;
+            const treasureCount = 2 + gameState.level;
+            
+            for (let y = 0; y < GRID_SIZE; y++) {
+                const row = [];
+                for (let x = 0; x < GRID_SIZE; x++) {
+                    row.push({ type: 'empty', x, y });
+                }
+                grid.push(row);
+            }
+
+            for (let i = 0; i < enemyCount; i++) {
+                let x, y;
+                do {
+                    x = Math.floor(Math.random() * GRID_SIZE);
+                    y = Math.floor(Math.random() * GRID_SIZE);
+                } while (grid[y][x].type !== 'empty' || (x === 0 && y === 0));
+                
+                const enemyTypes = ['fox', 'possum', 'raccoon'];
+                grid[y][x] = { type: 'enemy', enemyType: enemyTypes[Math.floor(Math.random() * enemyTypes.length)], x, y };
+            }
+
+            for (let i = 0; i < treasureCount; i++) {
+                let x, y;
+                do {
+                    x = Math.floor(Math.random() * GRID_SIZE);
+                    y = Math.floor(Math.random() * GRID_SIZE);
+                } while (grid[y][x].type !== 'empty' || (x === 0 && y === 0));
+                
+                grid[y][x] = { type: 'treasure', x, y };
+            }
+
+            if (gameState.level === 3) {
+                grid[GRID_SIZE - 1][GRID_SIZE - 1] = { type: 'boss', x: GRID_SIZE - 1, y: GRID_SIZE - 1 };
+            } else {
+                grid[GRID_SIZE - 1][GRID_SIZE - 1] = { type: 'exit', x: GRID_SIZE - 1, y: GRID_SIZE - 1 };
+            }
+
+            gameState.mapGrid = grid;
+            gameState.playerPos = { x: 0, y: 0 };
+            gameState.visitedCells = new Set(['0,0']);
+            
+            renderMap();
+        }
+
+        function renderMap() {
+            const mapGrid = document.getElementById('map-grid');
+            mapGrid.innerHTML = '';
+
+            for (let y = 0; y < GRID_SIZE; y++) {
+                for (let x = 0; x < GRID_SIZE; x++) {
+                    const cell = gameState.mapGrid[y][x];
+                    const div = document.createElement('div');
+                    div.className = `grid-cell ${getCellColor(cell, x, y)} border-2 flex items-center justify-center text-white cursor-pointer hover:opacity-80 shadow-sm`;
+                    
+                    div.onclick = () => {
+                        const dx = x - gameState.playerPos.x;
+                        const dy = y - gameState.playerPos.y;
+                        if (Math.abs(dx) <= 1 && Math.abs(dy) <= 1 && (Math.abs(dx) + Math.abs(dy) === 1)) {
+                            movePlayer(dx, dy);
+                        }
+                    };
+
+                    const content = getCellContent(cell, x, y);
+                    if (content) {
+                        div.innerHTML = content;
+                    }
+
+                    mapGrid.appendChild(div);
+                }
+            }
+        }
+
+        function getCellColor(cell, x, y) {
+            const isVisible = gameState.visitedCells.has(`${x},${y}`);
+            const isAdjacent = Math.abs(gameState.playerPos.x - x) <= 1 && Math.abs(gameState.playerPos.y - y) <= 1;
+            
+            if (!isVisible && !isAdjacent) return 'bg-stone-950';
+            
+            if (x === gameState.playerPos.x && y === gameState.playerPos.y) return 'bg-amber-600 border-amber-400';
+            
+            if (isVisible || isAdjacent) {
+                switch (cell.type) {
+                    case 'enemy': return 'bg-red-900 border-red-700';
+                    case 'boss': return 'bg-purple-900 border-purple-600';
+                    case 'treasure': return 'bg-yellow-700 border-yellow-500';
+                    case 'exit': return 'bg-emerald-700 border-emerald-500';
+                    default: return 'bg-stone-800 border-stone-700';
+                }
+            }
+            
+            return 'bg-stone-800 border-stone-700';
+        }
+
+        function getCellContent(cell, x, y) {
+            const isVisible = gameState.visitedCells.has(`${x},${y}`);
+            const isAdjacent = Math.abs(gameState.playerPos.x - x) <= 1 && Math.abs(gameState.playerPos.y - y) <= 1;
+            
+            if (x === gameState.playerPos.x && y === gameState.playerPos.y) {
+                if (gameState.sprites.player) {
+                    return `<img src="${gameState.sprites.player}" alt="P" class="w-full h-full object-contain">`;
+                }
+                return '<div class="text-xs font-bold text-amber-900">P</div>';
+            }
+            
+            if (isVisible || isAdjacent) {
+                if (cell.type === 'boss' && gameState.sprites.boss) {
+                    return `<img src="${gameState.sprites.boss}" alt="B" class="w-full h-full object-contain">`;
+                }
+                if (cell.type === 'enemy' && gameState.sprites[cell.enemyType]) {
+                    return `<img src="${gameState.sprites[cell.enemyType]}" alt="E" class="w-full h-full object-contain">`;
+                }
+                
+                switch (cell.type) {
+                    case 'enemy': return '<div class="text-xs text-red-200">E</div>';
+                    case 'boss': return '<div class="text-xs text-purple-200 font-bold">B</div>';
+                    case 'treasure': return '<div class="text-xs text-yellow-200">T</div>';
+                    case 'exit': return '<div class="text-xs text-emerald-200">X</div>';
+                }
+            }
+            
+            return '';
+        }
+
+        function movePlayer(dx, dy) {
+            if (gameState.mode !== 'map') return;
+
+            const newX = gameState.playerPos.x + dx;
+            const newY = gameState.playerPos.y + dy;
+
+            if (newX < 0 || newX >= GRID_SIZE || newY < 0 || newY >= GRID_SIZE) {
+                addLog('Thou canst not venture beyond ye map!');
+                return;
+            }
+
+            gameState.playerPos = { x: newX, y: newY };
+            gameState.visitedCells.add(`${newX},${newY}`);
+
+            const cell = gameState.mapGrid[newY][newX];
+            
+            if (cell.type === 'enemy') {
+                addLog(`Thou hast encountered a ${cell.enemyType}!`);
+                startBattle(cell.enemyType, false);
+            } else if (cell.type === 'boss') {
+                addLog('Lord Critterbane, ye Tyrant King, standeth before thee!');
+                startBattle('boss', true);
+            } else if (cell.type === 'treasure') {
+                const heal = 20;
+                gameState.playerHP = Math.min(gameState.playerMaxHP, gameState.playerHP + heal);
+                addLog(`Treasure found! Restored ${heal} HP!`);
+                gameState.mapGrid[newY][newX] = { type: 'empty', x: newX, y: newY };
+                updateUI();
+                renderMap();
+            } else if (cell.type === 'exit') {
+                addLog(`Leveleth ${gameState.level} complete! Advancing to leveleth ${gameState.level + 1}!`);
+                gameState.level++;
+                gameState.playerHP = Math.min(gameState.playerMaxHP, gameState.playerHP + 30);
+                gameState.playerMana = gameState.playerMaxMana;
+                updateUI();
+                generateMap();
+            } else {
+                renderMap();
+            }
+        }
+
+        function startBattle(enemyType
